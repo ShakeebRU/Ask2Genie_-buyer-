@@ -1,0 +1,2 @@
+D:/Genie/buyer/genie/android/app/.cxx/RelWithDebInfo/13645g5v/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/Genie/buyer/genie/android/app/.cxx/RelWithDebInfo/13645g5v/armeabi-v7a/CMakeFiles/rebuild_cache.dir
