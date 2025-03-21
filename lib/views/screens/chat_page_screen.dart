@@ -1201,6 +1201,7 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
                       .isNotEmpty) {
                     return ListView.builder(
                       controller: _scrollController,
+                      shrinkWrap: true,
                       reverse: true,
                       padding: const EdgeInsets.all(10),
                       itemBuilder: (context, index) {
