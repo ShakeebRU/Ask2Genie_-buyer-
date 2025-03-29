@@ -297,126 +297,128 @@ class FullImageView extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: Constants.secondaryColor,
-      // appBar: AppBar(
-      //   title: const Text('Image Viewer'),
-      // ),
-      body: PageView.builder(
-        controller: PageController(initialPage: initialIndex),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          final image = images[index];
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                height: height * 0.1,
-                width: width * 0.8,
-                padding: const EdgeInsets.all(5),
-                child: SizedBox(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Constants.secondaryColor,
+        // appBar: AppBar(
+        //   title: const Text('Image Viewer'),
+        // ),
+        body: PageView.builder(
+          controller: PageController(initialPage: initialIndex),
+          itemCount: images.length,
+          itemBuilder: (context, index) {
+            final image = images[index];
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
                   height: height * 0.1,
                   width: width * 0.8,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                  height: 30,
-                                  width: 30,
-                                  decoration: const BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black,
-                                          blurRadius: 3,
-                                          spreadRadius: 1,
-                                          offset: Offset(0, 3),
+                  padding: const EdgeInsets.all(5),
+                  child: SizedBox(
+                    height: height * 0.1,
+                    width: width * 0.8,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          width: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: const BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 3,
+                                            spreadRadius: 1,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(8),
+                                          bottomLeft: Radius.circular(0.0),
+                                          topRight: Radius.circular(8),
+                                          bottomRight: Radius.circular(8),
                                         ),
-                                      ],
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(8),
-                                        bottomLeft: Radius.circular(0.0),
-                                        topRight: Radius.circular(8),
-                                        bottomRight: Radius.circular(8),
-                                      ),
-                                      gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            Color(0xFF333333),
-                                            Color(0xFF747474)
-                                          ])),
-                                  child: const Icon(
-                                    Icons.arrow_back_ios_new,
-                                    color: Colors.white,
-                                    size: 13,
-                                  )),
+                                        gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Color(0xFF333333),
+                                              Color(0xFF747474)
+                                            ])),
+                                    child: const Icon(
+                                      Icons.arrow_back_ios_new,
+                                      color: Colors.white,
+                                      size: 13,
+                                    )),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            const SizedBox(
+                              height: 2,
+                            ),
+                            Image.asset(
+                              "assets/images/genieLamp.png",
+                              height: 48,
+                              width: 80,
+                              fit: BoxFit.contain,
+                            ),
+                            const Text(
+                              "Ask2Genie",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: 'Jaro',
+                                  color: Color(0xFFFFC300),
+                                  height: -0.2,
+                                  fontWeight: FontWeight.w400),
                             ),
                           ],
                         ),
-                      ),
-                      Column(
-                        children: [
-                          const SizedBox(
-                            height: 2,
-                          ),
-                          Image.asset(
-                            "assets/images/genieLamp.png",
-                            height: 48,
-                            width: 80,
-                            fit: BoxFit.contain,
-                          ),
-                          const Text(
-                            "Ask2Genie",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontFamily: 'Jaro',
-                                color: Color(0xFFFFC300),
-                                height: -0.2,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 25,
-                        width: 25,
-                      )
-                    ],
+                        const SizedBox(
+                          height: 25,
+                          width: 25,
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Center(
-                child: isMemoryImage
-                    ? Image.memory(
-                        base64Decode(image),
-                        fit: BoxFit.contain,
-                      )
-                    : Image.network(
-                        image,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.broken_image, size: 100),
-                      ),
-              ),
-              Container(
-                height: height * 0.09,
-                width: width * 0.8,
-              )
-            ],
-          );
-        },
+                Center(
+                  child: isMemoryImage
+                      ? Image.memory(
+                          base64Decode(image),
+                          fit: BoxFit.contain,
+                        )
+                      : Image.network(
+                          image,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.broken_image, size: 100),
+                        ),
+                ),
+                Container(
+                  height: height * 0.09,
+                  width: width * 0.8,
+                )
+              ],
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:genie/controllers/chat/chat_screen_controller.dart';
+import 'package:genie/models/query/seller_query_reponse_mode.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/auth/query_controller.dart';
 import '../../models/auth/logined_model.dart';
 import '../../models/query/buyer_notification_list_model.dart';
-import '../../models/query/query_image_model.dart';
-import '../../models/query/query_model.dart';
 import '../../utils/constants.dart';
 import '../../utils/preferences.dart';
 import '../../utils/utils.dart';
@@ -14,28 +13,27 @@ import '../components/custum_checkbox.dart';
 import '../components/image_gellery.dart';
 import '../components/rate_seller_widget.dart';
 
-class DetailQueryScreen extends StatefulWidget {
-  final bool isActive;
-  final QueryModel query;
-  final QueryMediaModel queryImages;
-  const DetailQueryScreen({
+class QuotationQuerySCreen extends StatefulWidget {
+  final QuotationDataModel query;
+  const QuotationQuerySCreen({
     super.key,
-    required this.isActive,
     required this.query,
-    required this.queryImages,
   });
 
   @override
-  State<DetailQueryScreen> createState() => _DetailQueryScreenState();
+  State<QuotationQuerySCreen> createState() => _QuotationQuerySCreenState();
 }
 
-class _DetailQueryScreenState extends State<DetailQueryScreen> {
+class _QuotationQuerySCreenState extends State<QuotationQuerySCreen> {
   bool isNewChecked = false;
   bool isUsedChecked = false;
   bool isAlternateChecked = false;
   String dueDate = '';
   String dueTime = '';
   String queryTime = '';
+  List<String> queryImages = [];
+  List<String> queryVedio = [];
+  List<String> queryAudio = [];
   void setData() {
     var result = Utils.formatDateTime(widget.query.dueDateTime!);
     dueDate = result['date']!;
@@ -44,6 +42,30 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
     isNewChecked = widget.query.conditionNew == 1;
     isUsedChecked = widget.query.conditionUsed == 1;
     isAlternateChecked = widget.query.alternateProduct == 1;
+    queryImages = widget.query.chatDetail
+        .map((test) => test.messageType == MessageType.image.toLowerCase()
+            ? test.docURL
+            : null)
+        .where((url) => url != null) // Remove null values
+        .cast<String>() // Cast to List<String>
+        .toList();
+    queryVedio = widget.query.chatDetail
+        .map((test) =>
+            test.messageType.toLowerCase() == MessageType.video.toLowerCase()
+                ? test.docURL
+                : null)
+        .where((url) => url != null) // Remove null values
+        .cast<String>() // Cast to List<String>
+        .toList();
+
+    queryAudio = widget.query.chatDetail
+        .map((test) =>
+            test.messageType.toLowerCase() == MessageType.audio.toLowerCase()
+                ? test.docURL
+                : null)
+        .where((url) => url != null) // Remove null values
+        .cast<String>() // Cast to List<String>
+        .toList();
     setState(() {});
   }
 
@@ -301,91 +323,116 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Row(
                                   children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        CustomCheckBox(
-                                          height: 25,
-                                          width: 25,
-                                          color: Constants.disableColor,
-                                          value: widget.query.conditionNew == 1,
-                                          onChanged: (value) {
-                                            // setState(() {
-                                            //   isNewChecked = value!;
-                                            // });
-                                          },
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          'New',
-                                          style: TextStyle(
-                                              color: Constants.disableColor,
-                                              fontFamily:
-                                                  GoogleFonts.anta().fontFamily,
-                                              fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        CustomCheckBox(
-                                          height: 25,
-                                          width: 25,
-                                          color: Constants.disableColor,
-                                          value:
-                                              widget.query.conditionUsed == 1,
-                                          onChanged: (value) {
-                                            // setState(() {
-                                            //   isUsedChecked = value!;
-                                            // });
-                                          },
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          'Used',
-                                          style: TextStyle(
-                                              color: Constants.disableColor,
-                                              fontFamily:
-                                                  GoogleFonts.anta().fontFamily,
-                                              fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
+                                    widget.query.itemCondition.toLowerCase() !=
+                                            "new"
+                                        ? SizedBox.shrink()
+                                        : Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              CustomCheckBox(
+                                                height: 25,
+                                                width: 25,
+                                                color: Constants.disableColor,
+                                                value:
+                                                    widget.query.conditionNew ==
+                                                        1,
+                                                onChanged: (value) {
+                                                  // setState(() {
+                                                  //   isNewChecked = value!;
+                                                  // });
+                                                },
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text(
+                                                'New',
+                                                style: TextStyle(
+                                                    color:
+                                                        Constants.disableColor,
+                                                    fontFamily:
+                                                        GoogleFonts.anta()
+                                                            .fontFamily,
+                                                    fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                    widget.query.itemCondition.toLowerCase() !=
+                                            "new"
+                                        ? SizedBox.shrink()
+                                        : const SizedBox(
+                                            width: 20,
+                                          ),
+                                    widget.query.itemCondition.toLowerCase() !=
+                                            "ssed"
+                                        ? SizedBox.shrink()
+                                        : Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              CustomCheckBox(
+                                                height: 25,
+                                                width: 25,
+                                                color: Constants.disableColor,
+                                                value: widget
+                                                        .query.conditionUsed ==
+                                                    1,
+                                                onChanged: (value) {
+                                                  // setState(() {
+                                                  //   isUsedChecked = value!;
+                                                  // });
+                                                },
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text(
+                                                'Used',
+                                                style: TextStyle(
+                                                    color:
+                                                        Constants.disableColor,
+                                                    fontFamily:
+                                                        GoogleFonts.anta()
+                                                            .fontFamily,
+                                                    fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                    widget.query.itemCondition.toLowerCase() !=
+                                            "alternate"
+                                        ? SizedBox.shrink()
+                                        : Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              CustomCheckBox(
+                                                height: 25,
+                                                width: 25,
+                                                color: Constants.disableColor,
+                                                value: widget.query
+                                                        .alternateProduct ==
+                                                    1,
+                                                onChanged: (value) {
+                                                  // setState(() {
+                                                  //   isUsedChecked = value!;
+                                                  // });
+                                                },
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text(
+                                                'Alternate\nProduct',
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                    color:
+                                                        Constants.disableColor,
+                                                    fontFamily:
+                                                        GoogleFonts.anta()
+                                                            .fontFamily,
+                                                    fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
                                   ],
                                 ),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  CustomCheckBox(
-                                    height: 25,
-                                    width: 25,
-                                    color: Constants.disableColor,
-                                    value: widget.query.alternateProduct == 1,
-                                    onChanged: (value) {
-                                      // setState(() {
-                                      //   isUsedChecked = value!;
-                                      // });
-                                    },
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Alternate\nProduct',
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                        color: Constants.disableColor,
-                                        fontFamily:
-                                            GoogleFonts.anta().fontFamily,
-                                        fontSize: 14),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
@@ -482,20 +529,34 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                             ),
                           ],
                         ),
-                        widget.queryImages.listvideo!.isEmpty
+                        SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: 130,
+                          child: Text(
+                            "Rate : ${widget.query.rate}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: GoogleFonts.anta().fontFamily,
+                              color: const Color(0xFF3AFF03),
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        queryVedio.isEmpty
                             ? const SizedBox()
                             : const SizedBox(
                                 height: 20,
                               ),
-                        widget.queryImages.listvideo!.isNotEmpty
+                        queryVedio.isNotEmpty
                             ? GestureDetector(
                                 onTap: () async {
-                                  if (widget
-                                      .queryImages.listvideo!.isNotEmpty) {
+                                  if (queryVedio.isNotEmpty) {
                                     await Utils.showVideoDialog(
-                                        context,
-                                        widget.queryImages.listvideo!.first,
-                                        true);
+                                        context, queryVedio.first, true);
                                   }
                                 },
                                 child: Stack(
@@ -531,17 +592,13 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                           margin: const EdgeInsets.all(5),
                                           decoration: BoxDecoration(
                                             color: Colors.black,
-                                            image: widget.queryImages.listvideo!
-                                                    .isEmpty
+                                            image: queryVedio.isEmpty
                                                 ? null
                                                 : DecorationImage(
                                                     fit: BoxFit.contain,
-                                                    image: NetworkImage(widget
-                                                        .queryImages
-                                                        .listvideo!
-                                                        .first)),
-                                            border: widget.queryImages
-                                                    .listvideo!.isEmpty
+                                                    image: NetworkImage(
+                                                        queryVedio.first)),
+                                            border: queryVedio.isEmpty
                                                 ? null
                                                 : BorderDirectional(
                                                     bottom: BorderSide(
@@ -560,8 +617,7 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                                     bottomRight:
                                                         Radius.circular(16)),
                                           ),
-                                          child: widget.queryImages.listvideo!
-                                                  .isNotEmpty
+                                          child: queryVedio.isNotEmpty
                                               ? null
                                               : Center(
                                                   child: Text(
@@ -590,22 +646,19 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                 ),
                               )
                             : const SizedBox(),
-                        widget.queryImages.listaudio!.isEmpty
+                        queryAudio.isEmpty
                             ? const SizedBox()
                             : const SizedBox(
                                 height: 20,
                               ),
-                        widget.queryImages.listaudio!.isNotEmpty
+                        queryAudio.isNotEmpty
                             ? Stack(
                                 children: [
                                   GestureDetector(
                                     onTap: () async {
-                                      if (widget
-                                          .queryImages.listaudio!.isNotEmpty) {
+                                      if (queryAudio.isNotEmpty) {
                                         await Utils.playBase64AudioWithControls(
-                                            context,
-                                            widget.queryImages.listaudio!.first,
-                                            true);
+                                            context, queryAudio.first, true);
                                       }
                                     },
                                     child: Container(
@@ -628,15 +681,13 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                         margin: const EdgeInsets.all(5),
                                         decoration: BoxDecoration(
                                           color: Colors.black,
-                                          image: widget.queryImages.listaudio!
-                                                  .isEmpty
+                                          image: queryAudio.isEmpty
                                               ? null
                                               : const DecorationImage(
                                                   fit: BoxFit.contain,
                                                   image: AssetImage(
                                                       "assets/newImages/microphone.png")),
-                                          border: widget.queryImages.listaudio!
-                                                  .isEmpty
+                                          border: queryAudio.isEmpty
                                               ? null
                                               : BorderDirectional(
                                                   bottom: BorderSide(
@@ -650,8 +701,7 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                               topRight: Radius.circular(16),
                                               bottomRight: Radius.circular(16)),
                                         ),
-                                        child: widget.queryImages.listaudio!
-                                                .isNotEmpty
+                                        child: queryAudio.isNotEmpty
                                             ? null
                                             : Center(
                                                 child: Text(
@@ -679,12 +729,12 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                 ],
                               )
                             : const SizedBox(),
-                        widget.queryImages.listimage!.isEmpty
+                        queryImages.isEmpty
                             ? const SizedBox()
                             : const SizedBox(
                                 height: 20,
                               ),
-                        widget.queryImages.listimage!.isEmpty
+                        queryImages.isEmpty
                             ? const SizedBox()
                             : Container(
                                 // height: 90,
@@ -710,7 +760,7 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                         topRight: Radius.circular(16),
                                         bottomRight: Radius.circular(16)),
                                   ),
-                                  child: widget.queryImages.listimage!.isEmpty
+                                  child: queryImages.isEmpty
                                       ? Center(
                                           child: Text(
                                             "No\nImage",
@@ -725,8 +775,7 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                                         )
                                       : Center(
                                           child: ImageGallery(
-                                            images: widget
-                                                .queryImages.listimage!
+                                            images: queryImages
                                                 .map((toElement) => toElement)
                                                 .toList(),
                                             isMemoryImage: false,
@@ -742,100 +791,6 @@ class _DetailQueryScreenState extends State<DetailQueryScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        widget.isActive
-                            ? GestureDetector(
-                                onTap: () async {
-                                  // select seller for selected
-                                  Utils.showLoadingDialog(context);
-                                  await controller.getActiveQuerySellerList(
-                                      widget.query.queryID!, false);
-                                  Navigator.pop(context);
-                                  NotificationModel? result =
-                                      await Utils.showSelectNotificationDialog(
-                                          context, controller.sellersList);
-                                  Utils.showLoadingDialog(context);
-                                  await controller.updateQueryStatus(context,
-                                      queryID: widget.query.queryID!,
-                                      buyerID:
-                                          await GetStorage().read('buyerID'),
-                                      status: "Closed");
-                                  if (result != null) {
-                                    Utils.showLoadingDialog(context);
-                                    await controller.querySellerSelected(
-                                        result.qsComputerNo);
-                                    Navigator.pop(context);
-                                    int? rating = await showRateSellerDialog(
-                                        context, result);
-                                    if (rating != null) {
-                                      Utils.showLoadingDialog(context);
-                                      final controller =
-                                          Provider.of<QueryController>(context,
-                                              listen: false);
-                                      await controller.rateSellerSelected(
-                                          result.qsComputerNo, rating);
-                                      Navigator.pop(context);
-                                    }
-                                  }
-                                  // else {
-                                  //   Utils.showCustomSnackbar(
-                                  //       context: context,
-                                  //       title: "Error",
-                                  //       message:
-                                  //           "To close query you have to select a seller",
-                                  //       backgroundColor: Colors.red);
-                                  // }
-                                },
-                                child: Container(
-                                  height: 50,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black,
-                                          blurRadius: 3,
-                                          spreadRadius: 1,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(8),
-                                        bottomLeft: Radius.circular(0.0),
-                                        topRight: Radius.circular(8),
-                                        bottomRight: Radius.circular(8),
-                                      ),
-                                      color: Constants.primaryColor),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Close Query ",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.white,
-                                            wordSpacing: 2,
-                                            fontFamily:
-                                                GoogleFonts.anta().fontFamily,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      Container(
-                                          height: 20,
-                                          width: 20,
-                                          margin:
-                                              const EdgeInsets.only(right: 5),
-                                          child: Image.asset(
-                                              color: Colors.white,
-                                              "assets/newImages/Group.png"))
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : const SizedBox.shrink(),
-                        widget.isActive
-                            ? const SizedBox(
-                                height: 20,
-                              )
-                            : const SizedBox.shrink(),
                       ],
                     ),
                   ),

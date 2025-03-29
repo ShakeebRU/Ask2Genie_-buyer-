@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:genie/models/query/seller_query_reponse_mode.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import '../../models/query/query_details_model.dart';
 import '../../utils/preferences.dart';
 import '../../utils/utils.dart';
 import 'chat_page_screen.dart';
+import 'quoptation_detail_screen.dart';
 
 class SellersListScreen extends StatefulWidget {
   const SellersListScreen({super.key});
@@ -222,7 +224,7 @@ class _SellersListScreenState extends State<SellersListScreen> {
 
                                   // },
                                   child: Container(
-                                      height: 100,
+                                      height: 114,
                                       width: width * 0.8,
                                       padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
@@ -395,8 +397,13 @@ class _SellersListScreenState extends State<SellersListScreen> {
                                               ),
                                               GestureDetector(
                                                 onTap: () async {
-                                                  // Utils.showLoadingDialog(
-                                                  //     context);
+                                                  Utils.showLoadingDialog(
+                                                      context);
+                                                  QuotationDataModel? res =
+                                                      await controller
+                                                          .getSelleryQueryResponse(
+                                                              notification
+                                                                  .qsComputerNo);
                                                   // GetQueryDetailsModel?
                                                   //     queryDetail =
                                                   //     await controller
@@ -413,22 +420,16 @@ class _SellersListScreenState extends State<SellersListScreen> {
                                                   //         listvideo:
                                                   //             queryDetail
                                                   //                 .listvideo);
-                                                  // Navigator.pop(context);
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //         builder:
-                                                  //             (context) {
-                                                  //   return DetailQueryScreen(
-                                                  //     isActive: true,
-                                                  //     query: queryDetail
-                                                  //             .list ??
-                                                  //         data,
-                                                  //     queryImages:
-                                                  //         queryMedia,
-                                                  //     // audio: '',
-                                                  //     // vedio: '',
-                                                  //   );
-                                                  // }));
+                                                  Navigator.pop(context);
+                                                  if (res != null) {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return QuotationQuerySCreen(
+                                                        query: res!,
+                                                      );
+                                                    }));
+                                                  }
                                                 },
                                                 child: Container(
                                                   height: 20,
@@ -497,7 +498,7 @@ class _SellersListScreenState extends State<SellersListScreen> {
                                             width: 5,
                                           ),
                                           SizedBox(
-                                            height: 85,
+                                            height: 130,
                                             width: 60,
                                             child: Column(
                                               mainAxisAlignment:

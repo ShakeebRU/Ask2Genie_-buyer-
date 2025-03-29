@@ -37,6 +37,8 @@ class ApiLinks {
       '$base/Query/getbuyeractivequerylist';
   static const String getactivequerysellerlist =
       '$base/Query/getactivequerysellerlist';
+  static const String getselleryqueryresponse =
+      '$base/Query/getselleryqueryresponse';
   static const String getBuyerHistoryQuery =
       '$base/Query/getbuyerhistoryquerylist';
   static const String getQueryImages = '$base/Query/getqueryimageslist';

@@ -13,15 +13,25 @@ class SplashServices {
     Timer(const Duration(seconds: 3), () {
       checkConnectionService.checkConnection().then((internet) async {
         if (!internet) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) {
-            return const LoginScreen();
-          }));
-          Utils.showCustomSnackbar(
-              context: context,
-              title: "No Internet",
-              message: "Please Check Your Internet Connection",
-              backgroundColor: Colors.red);
+          Utils.showconnectivityDialog(context, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const LoginScreen();
+                },
+              ),
+            );
+          });
+          // Navigator.pushReplacement(context,
+          //     MaterialPageRoute(builder: (context) {
+          //   return const LoginScreen();
+          // }));
+          // Utils.showCustomSnackbar(
+          //     context: context,
+          //     title: "No Internet",
+          //     message: "Please Check Your Internet Connection",
+          //     backgroundColor: Colors.red);
         } else {
           if (GetStorage().read('buyerID') == null) {
             print("User not Logged in ");

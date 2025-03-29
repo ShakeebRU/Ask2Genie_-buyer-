@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:genie/models/best_sellers_list_mdel.dart';
+import 'package:genie/models/query/seller_query_reponse_mode.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -235,7 +236,6 @@ class QueryController extends ChangeNotifier {
     return null;
   }
 
-  // active Queries Controller
   List<NotificationModel> notificationsList = [];
   Future<List<NotificationModel>?> getNotificationsList(int id) async {
     notificationsList = [];
@@ -246,6 +246,7 @@ class QueryController extends ChangeNotifier {
         .catchError((error) {
       debugPrint(error.toString());
     });
+
     if (response == null) null;
     debugPrint("This is statuc code====${response.statusCode}");
     debugPrint("This is my response====${response.data}");
@@ -255,6 +256,30 @@ class QueryController extends ChangeNotifier {
       notificationsList = data.list;
       notifyListeners();
       return notificationsList;
+    }
+    return null;
+  }
+
+  QuotationDataModel? quotation;
+  Future<QuotationDataModel?> getSelleryQueryResponse(int id) async {
+    quotation = null;
+    debugPrint("here");
+    debugPrint("${ApiLinks.getselleryqueryresponse}?qscomputerno=$id");
+    var response = await DioClient()
+        .get("${ApiLinks.getselleryqueryresponse}?qscomputerno=$id")
+        .catchError((error) {
+      debugPrint(error.toString());
+    });
+
+    if (response == null) null;
+    debugPrint("This is statuc code====${response.statusCode}");
+    debugPrint("This is my response====${response.data}");
+    if (response.statusCode == 200) {
+      SellerQueryResponseModel data =
+          SellerQueryResponseModel.fromJson(response.data);
+      quotation = data.list;
+      notifyListeners();
+      return quotation;
     }
     return null;
   }

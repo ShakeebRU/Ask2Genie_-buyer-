@@ -1101,25 +1101,10 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
                     decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 10),
-                      // border: InputBorder.none,
                       hintText: 'Write your message here',
                       hintStyle: GoogleFonts.antic(
                           color: const Color(0xFF878787), fontSize: 13),
-                      // fillColor: Constants.secondaryColor,
-                      // suffix: IconButton(
-                      //   onPressed: () {
-                      //     message.clear();
-                      //   },
-                      //   icon: const Icon(
-                      //     Icons.copy,
-                      //     color: Color(0xFF797C7B),
-                      //   ),
-                      // ),
                       border: const OutlineInputBorder(
-                          // borderSide: BorderSide(
-                          //     color: Constants.primaryColor,
-                          //     width: 1,
-                          //     strokeAlign: 0.5),
                           borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10),
@@ -1201,7 +1186,7 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
                       .isNotEmpty) {
                     return ListView.builder(
                       controller: _scrollController,
-                      shrinkWrap: true,
+                      // shrinkWrap: true,
                       reverse: true,
                       padding: const EdgeInsets.all(10),
                       itemBuilder: (context, index) {
@@ -1209,43 +1194,44 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
                             .messagesList[index];
                         final messageDate = DateFormat('yyyy-MM-dd')
                             .format(DateTime.parse(message.chatDateTime!));
-
                         bool showDateHeader = lastDate != messageDate;
                         lastDate = messageDate;
-
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          // shrinkWrap: true,
-                          // physics: NeverScrollableScrollPhysics(),
-                          children: [
-                            if (showDateHeader && index >= 0)
-                              Container(
-                                height: 50,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Center(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 5),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        DateFormat('dd MMM yyyy').format(
-                                            DateTime.parse(
-                                                message.chatDateTime!)),
-                                        style: const TextStyle(
-                                            fontSize: 12, color: Colors.black),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            buildItem(index, message),
-                          ],
-                        );
+                        return
+                            // Column(
+                            //   mainAxisSize: MainAxisSize.min,
+                            //   // shrinkWrap: true,
+                            //   // physics: NeverScrollableScrollPhysics(),
+                            //   children: [
+                            //     if (showDateHeader && index >= 0)
+                            //       Container(
+                            //         height: 50,
+                            //         child: Padding(
+                            //           padding:
+                            //               const EdgeInsets.symmetric(vertical: 8.0),
+                            //           child: Center(
+                            //             child: Container(
+                            //               padding: const EdgeInsets.symmetric(
+                            //                   horizontal: 10, vertical: 5),
+                            //               decoration: BoxDecoration(
+                            //                 color: Colors.grey[300],
+                            //                 borderRadius: BorderRadius.circular(10),
+                            //               ),
+                            //               child: Text(
+                            //                 DateFormat('dd MMM yyyy').format(
+                            //                     DateTime.parse(
+                            //                         message.chatDateTime!)),
+                            //                 style: const TextStyle(
+                            //                     fontSize: 12, color: Colors.black),
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            buildItem(index, message)
+                            //     ,
+                            //   ],
+                            // )
+                            ;
                       },
                       // (context, index) =>
                       // buildItem(index,

@@ -1053,4 +1053,28 @@ class Utils {
   //     ),
   //   );
   // }
+
+  static Future<void> showconnectivityDialog(
+      BuildContext context, Function func) async {
+    return await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Network Error'),
+          content: const Text(
+              'No Internet Connection. Please check your connection and try again.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => func,
+              child: Text(
+                'Ok',
+                style: TextStyle(color: Constants.textPrimaryColor),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
